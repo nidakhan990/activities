@@ -1,0 +1,7 @@
+---
+- name: Installing ngix service
+  hosts: all
+  become : true
+  remote_user: UBUNTU
+  roles:
+    - "ngnx-role"

@@ -1,0 +1,26 @@
+---
+# tasks file for nginx-role
+
+
+- name: update cache 
+  ansible.builtin.apt:
+    update_cache: yes
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: INSTALL NGINX FOR UBUNTU
+  ansible.builtin.apt:
+    name: nginx
+    state: latest
+  when: ansible_facts['os_family'] == "Debian"
+  
+
+- name: update cache 
+  ansible.builtin.yum:
+    update_cache: yes
+  when: ansible_facts['os_family'] == "Redhat"
+
+- name: INSTALL NGINX FOR redhat
+  ansible.builtin.yum:
+    name: nginx
+    state: latest
+  when: ansible_facts['os_family'] == "RedHat"
