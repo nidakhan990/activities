@@ -20,7 +20,7 @@ resource "aws_instance" "role-test" {
   ami = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
   iam_instance_profile =  var.profile
-  security_groups = [var.sg1]
+  vpc_security_group_ids = [var.sg1]
   key_name =  "test_key"
 
 
