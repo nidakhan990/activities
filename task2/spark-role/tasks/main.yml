@@ -1,0 +1,75 @@
+---
+# tasks file for spark-role
+- name: updating cache of ubuntu
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: add default jdk package
+  ansible.builtin.apt:
+    name: default-jdk
+    state: present
+
+
+- name: add scala package
+  ansible.builtin.apt:
+    name: scala
+    state: present
+
+
+
+- name: Unarchive a file that needs to be downloaded (added in 2.0)
+  ansible.builtin.unarchive:
+    src: https://archive.apache.org/dist/spark/spark-3.3.1/spark-3.3.1-bin-hadoop3.tgz
+    dest: /home/ubuntu/
+    remote_src: yes
+
+
+- name: Copy file with owner and permissions
+  ansible.builtin.copy:
+    src: /home/ubuntu/spark-3.3.1-bin-hadoop3
+    dest: /mnt/spark
+    mode: '0777'
+    remote_src: true
+
+
+
+- name: Add environment variables to .bashrc
+  ansible.builtin.lineinfile:
+    path: /home/ubuntu/.bashrc
+    line: 'export SPARK_HOME=/mnt/spark'
+    state: present
+
+
+
+- name: Add 2 environment variables to .bashrc
+  ansible.builtin.lineinfile:
+    path: /home/ubuntu/.bashrc
+    line: 'export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin'
+    state: present
+
+  
+
+- name: Source .bashrc and run commands
+  ansible.builtin.shell: |
+    . /home/ubuntu/.bashrc
+  tags: bsh
+
+    
+
+- name: spark script corn job
+  ansible.builtin.cron:
+    name: "check dirs"
+    minute: "1"
+    job: "/mnt/spark/spark-3.3.1-bin-hadoop3/sbin/start-master.sh"
+
+
+- name: Allow all access to tcp port 8080
+  community.general.ufw:
+    rule: allow
+    port: '8080'
+    proto: tcp
+
+
+
+
+
